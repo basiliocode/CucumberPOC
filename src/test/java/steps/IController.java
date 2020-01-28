@@ -11,7 +11,7 @@ public interface IController {
 
     boolean saleVoid(int amount, FINTYPE fintype, CARDTYPE cardtype);
 
-    boolean confirmation(String option);
+    boolean confirmation(String option) throws InterruptedException;
 
     String showData();
 }

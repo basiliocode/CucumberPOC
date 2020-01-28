@@ -58,7 +58,7 @@ public class LibController extends TesteBase implements IController {
             Assert.assertEquals(PWRET.MOREDATA,transacao.execTransac()); //Solicitará removeCard
             Assert.assertEquals(PWRET.OK,transacao.removeCard());
             Assert.assertEquals(PWRET.OK, transacao.ippEventLoop());
-            Assert.assertEquals(PWRET.OK, execTransac());//necessário 2 chamadas de execTransac
+            //Assert.assertEquals(PWRET.OK, execTransac());//necessário 2 chamadas de execTransac
             Assert.assertEquals(PWRET.OK,transacao.getResult(PWINFO.RESULTMSG,100));
             String resultMsg = transacao.getPszData(true);
             sale = "VENDA A VISTA: " + resultMsg + "\n";
@@ -74,7 +74,7 @@ public class LibController extends TesteBase implements IController {
         return false;
     }
 
-    public boolean confirmation(String option) {
+    public boolean confirmation(String option) throws InterruptedException {
         Assert.assertEquals(PWRET.OK,transacao.getResult(PWINFO.REQNUM,50));
         String reqNum = transacao.getPszData(true);
         Assert.assertEquals(PWRET.OK,transacao.getResult(PWINFO.AUTLOCREF,50));
