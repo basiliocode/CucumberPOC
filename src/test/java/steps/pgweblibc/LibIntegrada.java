@@ -1,5 +1,9 @@
 package steps.pgweblibc;
 
+import steps.pgweblibc.Enums.PWCNF;
+import steps.pgweblibc.Enums.PWINFO;
+import steps.pgweblibc.Enums.PWOPER;
+import steps.pgweblibc.Enums.PWRET;
 import steps.pgweblibc.Estruturas.PW_GetData;
 import steps.pgweblibc.Interfaces.InterfaceComPGWebLib;
 import com.sun.jna.Native;
@@ -18,51 +22,61 @@ public class LibIntegrada {
                 InterfaceComPGWebLib.class); //lendo a lib pela Interface
     }
 
-    public short chamarPW_iInit(String caminho) {
-        return pgWebLib.PW_iInit(caminho);
+    public PWRET chamarPW_iInit(String caminho) { return PWRET.get(pgWebLib.PW_iInit(caminho)); }
+
+    public PWRET chamarPW_iNewTransac(PWOPER tipoOperacao) {
+        return PWRET.get(pgWebLib.PW_iNewTransac(tipoOperacao.getValor()));
     }
 
-    public short chamarPW_iNewTransac(int tipoOperacao) {
-        return pgWebLib.PW_iNewTransac(tipoOperacao);
+    public PWRET chamarPW_iAddParam(PWINFO wParam, String pszValue) {
+        return PWRET.get(pgWebLib.PW_iAddParam(wParam.getValor(), pszValue));
     }
 
-    public short chamarPW_iAddParam(int wParam, String pszValue) {
-        return pgWebLib.PW_iAddParam(wParam, pszValue);
+    public PWRET chamarPW_iExecTransac(PW_GetData[] vstParam, ShortByReference iNumParam) {
+        return PWRET.get(pgWebLib.PW_iExecTransac(vstParam, iNumParam));
     }
 
-    public short chamarPW_iExecTransac(PW_GetData[] vstParam, ShortByReference iNumParam) {
-        return pgWebLib.PW_iExecTransac(vstParam, iNumParam);
+    public PWRET chamarPW_iPPDisplay (String pszMsg) { return PWRET.get(pgWebLib.PW_iPPDisplay(pszMsg)); }
+
+    public PWRET chamarPW_iPP_EventLoop(byte[] szDspMsg, int ulDisplaySize) {
+        return PWRET.get(pgWebLib.PW_iPPEventLoop(szDspMsg, ulDisplaySize));
     }
 
-    public short chamarPW_iPPDisplay (String pszMsg) { return pgWebLib.PW_iPPDisplay(pszMsg); }
+    public PWRET chamarPW_iPP_RemoveCard() { return PWRET.get(pgWebLib.PW_iPPRemoveCard()); }
 
-    public short chamarPW_iPP_EventLoop(byte[] szDspMsg, int ulDisplaySize) {
-        return pgWebLib.PW_iPPEventLoop(szDspMsg, ulDisplaySize);
+    public PWRET chamarPW_iPPAbort () { return PWRET.get(pgWebLib.PW_iPPAbort ()); }
+
+    public PWRET chamarPW_iGetResult(PWINFO iInfo, byte[] pszData, int ulDataSize) {
+        return PWRET.get(pgWebLib.PW_iGetResult(iInfo.getValor(), pszData, ulDataSize));
     }
 
-    public short chamarPW_iPP_RemoveCard() {
-        return pgWebLib.PW_iPPRemoveCard();
-    }
+    public PWRET chamarPW_iPPGetCard(short uiIndex){ return PWRET.get(pgWebLib.PW_iPPGetCard(uiIndex)); }
 
-    public short chamarPW_iPPAbort () { return pgWebLib.PW_iPPAbort (); }
+    public PWRET chamarPW_iPPGoOnChip(short uiIndex){ return PWRET.get(pgWebLib.PW_iPPGoOnChip(uiIndex)); }
 
-    public short chamarPW_iGetResult(int iInfo, byte[] pszData, int ulDataSize) {
-        return pgWebLib.PW_iGetResult(iInfo, pszData, ulDataSize);
-    }
+    public PWRET chamarPW_iPPFinishChip(short uiIndex){ return PWRET.get(pgWebLib.PW_iPPFinishChip(uiIndex)); }
 
-    public short chamarPW_iPPGetCard(short uiIndex){ return pgWebLib.PW_iPPGetCard(uiIndex); }
-
-    public short chamarPW_iPPGoOnChip(short uiIndex){ return pgWebLib.PW_iPPGoOnChip(uiIndex); }
-
-    public short chamarPW_iPPFinishChip(short uiIndex){ return pgWebLib.PW_iPPFinishChip(uiIndex); }
-
-    public short chamarPW_iConfirmation(int ulStatus, String pszReqNum, String pszLocRef,
+    public PWRET chamarPW_iConfirmation(PWCNF ulStatus, String pszReqNum, String pszLocRef,
                                         String pszExtRef, String pszVirtMerch, String pszAuthSyst){
-        return pgWebLib.PW_iConfirmation(ulStatus, pszReqNum, pszLocRef, pszExtRef, pszVirtMerch, pszAuthSyst);
+        return PWRET.get(pgWebLib.PW_iConfirmation(ulStatus.getValor(), pszReqNum, pszLocRef, pszExtRef, pszVirtMerch,
+                pszAuthSyst));
     }
 
-    public short chamarPW_iIdleProc (){return pgWebLib.PW_iIdleProc(); }
+    public PWRET chamarPW_iIdleProc (){return PWRET.get(pgWebLib.PW_iIdleProc()); }
 
-    public short chamarPW_iPPDataConfirmation (short uiIndex){ return pgWebLib.PW_iPPDataConfirmation(uiIndex); }
+    public PWRET chamarPW_iPPDataConfirmation (short uiIndex){
+        return PWRET.get(pgWebLib.PW_iPPDataConfirmation(uiIndex));
+    }
+
+    public PWRET addMandatoryParams(){
+        PWRET pwret = PWRET.get(pgWebLib.PW_iAddParam(PWINFO.AUTNAME.getValor(),"AUTOMATION TEST"));
+        if (pwret != PWRET.OK) return pwret;
+        pwret = PWRET.get(pgWebLib.PW_iAddParam(PWINFO.AUTVER.getValor(),"1.0.0"));
+        if (pwret != PWRET.OK) return pwret;
+        pwret = PWRET.get(pgWebLib.PW_iAddParam(PWINFO.AUTDEV.getValor(),"PayGo QA"));
+        if (pwret != PWRET.OK) return pwret;
+
+        return PWRET.get(pgWebLib.PW_iAddParam(PWINFO.AUTCAP.getValor(),"15"));
+    }
 
 }

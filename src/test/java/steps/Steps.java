@@ -8,8 +8,6 @@ import cucumber.api.java.pt.Entao;
 import steps.enumApp.APP;
 import steps.enumApp.CARDTYPE;
 import steps.enumApp.FINTYPE;
-import steps.pgweblibc.ChamarFuncoes;
-
 
 import static steps.enumApp.APP.*;
 
@@ -19,10 +17,9 @@ public class Steps {
 
     @Before
     public void initializer(){
-        app = LIBCW; //colocar como parametro de um arquivo
+        app = PAYGOCONV; //colocar como parametro de um arquivo
         switch (app){
             case LIBCW:
-                ChamarFuncoes.chamarPW_iInit(".");
                 controller = new LibController();
                 break;
             case LIBCL: System.out.println(" Linux ");
@@ -36,24 +33,39 @@ public class Steps {
 
     }
 
-    @Dado("^Terminal seja instalado com o PdC (.*) e CNPJ (.*) no ambiente PGWeb (.*)$")
-    public void terminal_instalado(String pdc, String cnpj, String pgweb)  throws Throwable{
+    @Dado("^que a biblioteca seja inicializada$")
+    public void inicializar_lib(){
+        controller.init(".");
+    }
+
+    @Dado("^terminal esteja instalado com o PdC (.*)$")
+    public void terminal_instalado(String PdC) throws Throwable{
+        controller.consultarPdC(PdC);
+    }
+
+    @Dado("^for instalado com o (.*) e CNPJ (.*) no ambiente PGWeb (.*)$")
+    public void instalar_terminal(String pdc, String cnpj, String pgweb) throws Throwable{
         controller.install(pdc,cnpj,pgweb);
     }
 
-    @Quando("^(?:Fazer|Realizar) a venda digitada com o cartao (.*) e data de vencimento (.*) no valor de (.*00) reais$")
+    @Quando("^(?:fazer|realizar) a venda digitada com o cartao (.*) e data de vencimento (.*) no valor de (.*) reais$")
     public void fazer_a_venda( String cardNumber, String dataVenc, String amount) throws Throwable {
         controller.sale(Integer.parseInt(amount), FINTYPE.IN_CASH, CARDTYPE.CREDIT,cardNumber,dataVenc);
     }
 
-    @Entao("^(Confirme|confirme|Desfaca|desfaca) a venda$")
+    @E("^(Confirme|confirme|Desfaca|desfaca) a venda$")
     public void confirmar_venda( String option) throws Throwable {
         controller.confirmation(option);
     }
 
-    @E("^(?:Mostre|Exiba) o resultado$")
-    public void mostre_venda_autorizada() throws Throwable {
-        System.out.println(controller.showData());
+    @Entao("^o resultado da instalação deve ser (.*)$")
+    public void resultado_instalacao(String status) throws IllegalAccessException {
+        System.out.println(controller.statusDaInstalacao(status));
+    }
+
+    @Entao("^venda deve ter o status (.*)$")
+    public void status_da_venda( String status) throws Throwable {
+        System.out.println(controller.statusDaVenda(status));
     }
 
 }

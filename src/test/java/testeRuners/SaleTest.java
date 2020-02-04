@@ -7,9 +7,10 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "src/test/features_lib",
-        tags = "@VendaTeste",
+        tags = "@saleTest",
         glue = "steps",
         monochrome = true
 )
-public class VendaTeste {
+public class SaleTest {
 }
+

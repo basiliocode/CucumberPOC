@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Transacao {
+    private LibIntegrada lib = new LibIntegrada();
     private PWOPER oper = null;
     private final ShortByReference iNumParam;
     private PW_GetData[] vstParam;
@@ -23,58 +24,58 @@ public class Transacao {
     //FUNCOES NATIVAS
     public PWRET newTransac(PWOPER oper){
         this.oper = oper;
-        return ChamarFuncoes.chamarPW_iNewTransac(oper);
+        return lib.chamarPW_iNewTransac(oper);
     }
 
     public PWRET addParam(PWINFO param, String data){
-        return  ChamarFuncoes.chamarPW_iAddParam(param, data);
+        return  lib.chamarPW_iAddParam(param, data);
     }
 
     public PWRET mandatoryParams(){
-        return ChamarFuncoes.addMandatoryParams();
+        return lib.addMandatoryParams();
     }
 
     public PWRET execTransac() throws InterruptedException {
         setINumParam((short)10);
         Thread.sleep(500);
-        return ChamarFuncoes.chamarPW_iExecTransac(vstParam, iNumParam);
+        return lib.chamarPW_iExecTransac(vstParam, iNumParam);
     }
 
     public PWRET ippEventLoop() throws InterruptedException {
         Thread.sleep(500);
-        return ChamarFuncoes.chamarPW_iPPEventLoop(szDspMsg, szDspMsg.length);
+        return lib.chamarPW_iPP_EventLoop(szDspMsg, szDspMsg.length);
     }
 
     public PWRET removeCard(){
-        return ChamarFuncoes.chamarPW_iPPRemoveCard();
+        return lib.chamarPW_iPP_RemoveCard();
     }
 
-    public PWRET Abort(){ return ChamarFuncoes.chamarPW_iPPAbort (); }
+    public PWRET Abort(){ return lib.chamarPW_iPPAbort (); }
 
     public  PWRET getResult(PWINFO param, int ulDataSize){
         this.pszData = new byte[ulDataSize];
-        return ChamarFuncoes.chamarPW_iGetResult(param, pszData, ulDataSize);
+        return lib.chamarPW_iGetResult(param, pszData, ulDataSize);
     }
 
-    public PWRET idleProc(){ return ChamarFuncoes.chamarPW_iIdleProc(); }
+    public PWRET idleProc(){ return lib.chamarPW_iIdleProc(); }
 
     public PWRET ippGetCard(int indiceVstParam){
-        return ChamarFuncoes.chamarPW_iPPGetCard((short) indiceVstParam);
+        return lib.chamarPW_iPPGetCard((short) indiceVstParam);
     }
 
     public PWRET ippGoOnChip(int indiceVstParam){
-        return ChamarFuncoes.chamarPW_iPPGoOnChip((short) indiceVstParam);
+        return lib.chamarPW_iPPGoOnChip((short) indiceVstParam);
     }
 
-    public PWRET ippFinishChip(int indiceVstParam){ return ChamarFuncoes.chamarPW_iPPFinishChip((short) indiceVstParam); }
+    public PWRET ippFinishChip(int indiceVstParam){ return lib.chamarPW_iPPFinishChip((short) indiceVstParam); }
 
     public PWRET ippConfirmation(PWCNF ulSatus, String pszReqNum, String pszLocRef, String pszExtRef,
                                  String pszVirtMerch, String pszAuthSyst){
-        return ChamarFuncoes.chamarPW_iConfirmation(ulSatus, pszReqNum, pszLocRef, pszExtRef, pszVirtMerch, pszAuthSyst);
+        return lib.chamarPW_iConfirmation(ulSatus, pszReqNum, pszLocRef, pszExtRef, pszVirtMerch, pszAuthSyst);
     }
 
     public PWRET ippDataConfirmation(int indiceVstParam){
-        return ChamarFuncoes.chamarPW_iPPDataConfirmation((short) indiceVstParam);
+        return lib.chamarPW_iPPDataConfirmation((short) indiceVstParam);
     }
 
 
@@ -102,11 +103,11 @@ public class Transacao {
 
     //GETS PARAMENTROS DO VETOR
     public PWINFO getWidentificador(int index){
-        return converterPWINFO(vstParam[index].wIdentificador);
+        return PWINFO.get(vstParam[index].wIdentificador);
     }
 
     public PWDAT getBtipoDeDado(int index){
-        return converterPWDAT(vstParam[index].bTipoDeDado);
+        return PWDAT.get(vstParam[index].bTipoDeDado);
     }
 
     public String getSzPrompt(int index){ return correcaoMensagem(vstParam[index].szPrompt); }
@@ -245,23 +246,6 @@ public class Transacao {
         Matcher m = p.matcher(mensagemFormatada);
         mensagem = m.replaceAll(" ");
         return mensagem.substring(0,mensagem.length()-1);
-    }
-
-    //Conversores
-    private PWINFO converterPWINFO(short valor){
-        for ( PWINFO pwinfo : PWINFO.values()){
-            if(pwinfo.getValor() == valor)
-                return pwinfo;
-        }
-        return null;
-    }
-
-    private PWDAT converterPWDAT(byte valor){
-        for ( PWDAT pwdat : PWDAT.values()){
-            if(pwdat.getValor() == valor)
-                return pwdat;
-        }
-        return null;
     }
 
 }

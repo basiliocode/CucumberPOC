@@ -1,5 +1,8 @@
 package steps.pgweblibc.Enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum PWRET {
     OK((short)0),
     FROMHOSTPENDTRN((short)-2599),
@@ -110,20 +113,29 @@ public enum PWRET {
     OFFINTERNAL11,
     OFFNOPRODUCT;
 
-    private short valor;
+    private final short valor;
 
-    PWRET(short valor){
+    // Reverse-lookup map for getting a PWRET from an abbreviation
+    private static final Map<Short, PWRET> lookup = new HashMap<Short, PWRET>();
+
+    static {
+        for (PWRET pwret : PWRET.values()) {
+            lookup.put(pwret.getValor(), pwret);
+        }
+    }
+
+    private PWRET(short valor){
         this.valor = valor;
     }
-
-    PWRET(){
+    private PWRET(){
         this.valor = -1;
     }
-
 
     public short getValor(){
         return this.valor;
     }
+
+    public static PWRET get (short value) { return lookup.get(value); }
 
     @Override
     public String toString(){

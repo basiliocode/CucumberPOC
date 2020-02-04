@@ -1,5 +1,8 @@
 package steps.pgweblibc.Enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum PWINFO {
 
     OPERATION(2),
@@ -122,8 +125,24 @@ public enum PWINFO {
 
     private int valor;
 
-    PWINFO(int valor){ this.valor = valor; }
+    // Reverse-lookup map for getting a PWINFO from an abbreviation
+    private static final Map<Integer, PWINFO> lookup = new HashMap<Integer, PWINFO>();
+
+    static {
+        for (PWINFO pwinfo : PWINFO.values()) {
+            lookup.put(pwinfo.getValor(), pwinfo);
+        }
+    }
+
+    private PWINFO(int valor){ this.valor = valor; }
 
     public int getValor(){ return this.valor; }
+
+    public static PWINFO get (short value) { return lookup.get(value); }
+
+    @Override
+    public String toString(){
+        return "PWINFO." + super.toString();
+    }
 
 }

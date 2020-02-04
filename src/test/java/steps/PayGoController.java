@@ -5,9 +5,17 @@ import steps.enumApp.FINTYPE;
 
 public class PayGoController implements IController  {
 
+    public void init(String path) {
+
+    }
+
     public boolean install(String pdc, String cnpj, String pgweb) {
         System.out.println("LUCAS IMPLEMENTA A INSTALACAO DO PG CONVENCIONAL COM OS PARAMETROS ("+ pdc +" "+ " "
                 + cnpj +" "+ pgweb +")");
+        return false;
+    }
+
+    public boolean consultarPdC(String PdC) throws InterruptedException {
         return false;
     }
 
@@ -26,6 +34,18 @@ public class PayGoController implements IController  {
     public boolean confirmation(String option) {
         System.out.println("LUCAS IMPLEMENTA A CONFIRMACAO DO PG CONVENCIONAL COM O PARAMETRO ("+ option+")");
         return false;
+    }
+
+    public String statusDaVenda(String status) {
+        return "LUCAS IMPLEMENTA O STATUS DA VENDA DO PG CONVENCIONAL";
+    }
+
+    public String statusDaInstalacao(String status) {
+        return "LUCAS IMPLEMENTA O STATUS DA INSTALACAO DO PG CONVENCIONAL";
+    }
+
+    public String status(String status) {
+        return null;
     }
 
     public String showData() {

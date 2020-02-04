@@ -1,5 +1,8 @@
 package steps.pgweblibc.Enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum PWDAT {
 
     MENU((byte)1),
@@ -18,12 +21,28 @@ public enum PWDAT {
 
     private byte valor;
 
-    PWDAT(byte valor){
+    // Reverse-lookup map for getting a PWDAT from an abbreviation
+    private static final Map<Byte, PWDAT> lookup = new HashMap<Byte, PWDAT>();
+
+    static {
+        for (PWDAT pwdat : PWDAT.values()) {
+            lookup.put(pwdat.getValor(), pwdat);
+        }
+    }
+
+    private PWDAT(byte valor){
         this.valor = valor;
     }
-    PWDAT(){ valor = -1; }
+    private PWDAT(){ valor = -1; }
 
     public byte getValor(){
         return this.valor;
+    }
+
+    public static PWDAT get (byte value) { return lookup.get(value); }
+
+    @Override
+    public String toString(){
+        return "PWDAT." + super.toString();
     }
 }
